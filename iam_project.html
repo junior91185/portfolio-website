@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>IAM Application Project</title>
+    <link rel="stylesheet" href="css/styles_iam.css">
+    <link rel="stylesheet" href="css/nav.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="menu">
+            <ul>
+                <li><a href="home.html">Home</a></li>
+                <li><a href="resume.html">Resume</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="aboutme.html">About Me</a></li>
+            </ul>  
+        </nav>
+    </header>
+
+    <div class="project-container">
+        <h1>IAM Application Project</h1>
+        <p><strong>Technologies:</strong> Linux (Ubuntu), Bash</p>
+
+        <h2>Project Overview</h2>
+        <p>
+            During my time as Identity Aceess Management (IAM) Intern at the University of Rochester Information Security Departemnt, I was tasked with conducting a compliance auduit for 30+ IAM applications . Applications included Duo Two Factor Authentication, CyberArk, Guest Account System, and more.
+
+            One of the many taks to complete for the compliance auduit were to verify the accuracy of critical attributes (service components, host details, IP addresses) on the Info Secs server page. 
+
+            I created a simple to automate DNS validation, replacing manual nslookup checks and ensuring accurate IP-to-hostname mappings. </p>
+
+
+        <br>
+        <h2>Purpose</h2>
+        <p>
+            Create a script to automate the verification of IP addresses and hostnames for accurate entry into the application catalog. Ensuring that each IP address has the correct hostname was essential for maintaining precise and reliable documentation.</p>
+
+        <br>
+        
+        <h2>Example Usage</h2>
+        <p>Create a text or csv file with a list of IP addresses (one per line).</p>
+        <pre><code>8.8.8.8</code>
+<code>4.4.4.4</code>
+<code>216.239.36.10</code></pre>
+
+        <p>Run the script with the input file as a parameter:</p>
+        <pre><code>./main.sh path/to/your/input_file.csv</code></pre>
+
+        <h2>Results</h2>
+        <p>The DNS Lookup Tool produces a clear and organized output that lists each IP address alongside its corresponding hostname. This helps in quickly verifying and documenting network information.</p>
+
+        <h3>Example Output:</h3>
+        <pre><code>8.8.8.8    dns.google</code>
+<code>4.4.4.4    quad9.net</code>
+<code>216.239.36.10    ns3.google.com</code></pre>
+
+    
+        <h2>Screenshots</h2>
+        <img src="images/powershellscript.png" alt="Script Code" class="project-image">
+
+        <br>
+        <a href="projects.html" class="back-button">← Back to Projects</a>
+    </div>
+
+</body>
+</html>

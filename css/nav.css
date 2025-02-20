@@ -1,0 +1,48 @@
+.menu {
+    display: flex;
+    justify-content: center;
+}
+.menu ul {
+    list-style: none;
+    padding: 0;
+    margin-top:20px;
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+}
+
+.menu ul li {
+    display: inline;
+}
+
+.menu ul li a {
+    text-decoration: none;
+    font-weight: bold;
+    background-color: #cf2e3c;
+    color: #ffffff;
+    padding: 12px 25px;
+    border-radius: 8px;
+}
+
+
+.menu li a {
+    padding: 10px 20px;
+    background-color: #E63946;
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.menu li a:hover {
+    background-color: #FF6B6B;
+}
+
+
+.header {
+    width: 100%;
+    background-color: #1e1e1e;
+    padding: 20px 0;
+    top: 0;
+    z-index: 10;
+}

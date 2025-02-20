@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Broadcasting & DoS Mitigation Project</title>
+    <link rel="stylesheet" href="css/styles_iam.css">
+    <link rel="stylesheet" href="css/nav.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="menu">
+            <ul>
+                <li><a href="home.html">Home</a></li>
+                <li><a href="resume.html">Resume</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="aboutme.html">About Me</a></li>
+            </ul>  
+        </nav>
+    </header>
+
+    <div class="project-container">
+        <h1>Broadcasting & DoS Mitigation</h1>
+        <p>This project was developed as part of a hands-on lab for <i>Introduction to Cryptography and Computer Security</i>. It demonstrates:</p>
+        <ul>
+            <li>Client-server communication using UDP.</li>
+            <li>Broadcasting messages from the client to the server.</li>
+            <li>Implementation of DoS (Denial of Service) mitigation strategies.</li>
+        </ul>
+
+        <h2>Purpose</h2>
+        <p>This lab provided an opportunity to apply networking principles in a practical setting, showcasing skills in socket programming, multithreading, and DoS mitigation techniques.</p>
+
+        <h2>Features</h2>
+        <ul>
+            <li><strong>Client-Server Communication:</strong> Clients broadcast UDP messages to the server, and the server listens and responds dynamically.</li>
+            <li><strong>Anti-DoS Strategies:</strong> Implementing rate-limiting requests per client and blacklisting abusive clients.</li>
+            <li><strong>Multithreading:</strong> The server uses multithreaded request handling for better scalability.</li>
+        </ul>
+        <br>
+        <h2>Example Usage</h2>
+        <p>Set up the Server to listen for Client broadcast</p>
+        <pre><code>server_RecieveBroadcast.py
+
+import socket
+
+# Server setup
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)    #this socket designed to accept broadcasting
+server_socket.bind(("", 5005))                      # Bind to all interfaces on server port 5005 (hypothetical port)
+
+print("Server is listening for broadcasts...")
+
+....... </code>
+        </pre>
+
+        <img src="images/server_listening.png" alt="Server Listening" class="project-image">
+
+        <p>Set up the Client to broadcasts messages</p>
+        <pre><code>client_broadcastingServert.py
+
+import socket
+
+# Client setup
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) 
+client_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1) 
+client_socket.settimeout(2)
+
+message = b"Broadcasting message to server"
+client_socket.sendto(message, ('<broadcast>', 5005))  # Send broadcast for all devices listening to port 5005
+
+try:
+# Receive response from server
+    data, addr = client_socket.recvfrom(1024)
+    print(f"Received response: {data.decode()} from {addr}")
+except socket.timeout:
+    print("No response received.")
+        </code></pre>
+
+        
+
+        <h2>Results</h2>
+        <p>The Server listens for broadcasts and responds to the Client:</p>
+        <pre><code>server_RecieveBroadcast.py 
+
+.......
+
+while True:
+# Receive message from client
+data, addr = server_socket.recvfrom(1024)    ##buffer size 1024
+print(f"Received message: {data.decode()} from {addr}")
+        
+# Respond to client
+server_socket.sendto(b"Hello from server!", addr)   # server will share her IP address with the client
+        </code></pre>
+
+        <img src="images/client_broadcasting_results.png" alt="Client Broadcasting" class="project-image">
+        <img src="images/server_recieve.png" alt="Server Recieving" class="project-image">
+
+        <h2>Denial-of-Service (DoS) Mitigation in Action</h2>
+        <p>The server safeguards itself against excessive traffic by implementing rate limiting and blacklisting abusive clients.</p>
+        
+        <p>By using <strong>client_broadcasting_loop.py</strong>, I was able to simulate a Client overwhelming a Server with requests, mimicking the behavior of a "real" Denial-of-Service (DoS) attack. The client program continuously broadcasts messages to the server at a rapid rate, demonstrating how an attacker might try to flood a server with excessive traffic to disrupt its normal operations.</p> <p>To counter this simulated attack, I developed <strong>anti_DoS_server_Advanced.py</strong>, a server-side script designed to detect and mitigate the impact of such attacks. This program implements a rate-limiting mechanism that monitors the number of requests received from each client. If a client exceeds a predefined threshold (e.g., 15 requests per second), the server temporarily blacklists the client by blocking its requests for a specific duration. Additionally, the server tracks "repeat offenders"—clients who exceed the rate limit multiple times—and permanently blocks them if they are blacklisted three times.</p> </p>
+
+        <video width="400" controls>
+            <source src="media/DoS-example.mp4" type="video/mp4" class="project-image">
+        </video>
+        
+        <br>
+        <a href="projects.html" class="back-button">← Back to Projects</a>
+        <a href="https://github.com/junior91185/broadcasting-and-DoS-mitigation"target="_blank" class="project-link">GitHub</a>
+
+    </div>
+
+</body>
+</html>
