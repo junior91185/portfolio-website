@@ -19,6 +19,10 @@ window.onload = function () {
     if (document.getElementById("Projects")) {
         typeEffect("Projects", "My Projects", 100);
     }
+
+        if (document.getElementById("AboutMe")) {
+        typeEffect("AboutMe", "About Me", 100);
+    }
 };
 
 
