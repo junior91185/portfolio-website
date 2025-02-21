@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <title>Broadcasting & DoS Mitigation Project</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles_iam.css">
     <link rel="stylesheet" href="css/nav.css">
 </head>
@@ -66,7 +65,7 @@ client_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 client_socket.settimeout(2)
 
 message = b"Broadcasting message to server"
-client_socket.sendto(message, ('<broadcast>', 5005))  # Send broadcast for all devices listening to port 5005
+client_socket.sendto(message, ('broadcast', 5005))  # Send broadcast for all devices listening to port 5005
 
 try:
 # Receive response from server
@@ -75,8 +74,6 @@ try:
 except socket.timeout:
     print("No response received.")
         </code></pre>
-
-        
 
         <h2>Results</h2>
         <p>The Server listens for broadcasts and responds to the Client:</p>
@@ -99,7 +96,7 @@ server_socket.sendto(b"Hello from server!", addr)   # server will share her IP a
         <h2>Denial-of-Service (DoS) Mitigation in Action</h2>
         <p>The server safeguards itself against excessive traffic by implementing rate limiting and blacklisting abusive clients.</p>
         
-        <p>By using <strong>client_broadcasting_loop.py</strong>, I was able to simulate a Client overwhelming a Server with requests, mimicking the behavior of a "real" Denial-of-Service (DoS) attack. The client program continuously broadcasts messages to the server at a rapid rate, demonstrating how an attacker might try to flood a server with excessive traffic to disrupt its normal operations.</p> <p>To counter this simulated attack, I developed <strong>anti_DoS_server_Advanced.py</strong>, a server-side script designed to detect and mitigate the impact of such attacks. This program implements a rate-limiting mechanism that monitors the number of requests received from each client. If a client exceeds a predefined threshold (e.g., 15 requests per second), the server temporarily blacklists the client by blocking its requests for a specific duration. Additionally, the server tracks "repeat offenders"—clients who exceed the rate limit multiple times—and permanently blocks them if they are blacklisted three times.</p> </p>
+        <p>By using <strong>client_broadcasting_loop.py</strong>, I was able to simulate a Client overwhelming a Server with requests, mimicking the behavior of a "real" Denial-of-Service (DoS) attack. The client program continuously broadcasts messages to the server at a rapid rate, demonstrating how an attacker might try to flood a server with excessive traffic to disrupt its normal operations. To counter this simulated attack, I developed <strong>anti_DoS_server_Advanced.py</strong>, a server-side script designed to detect and mitigate the impact of such attacks. This program implements a rate-limiting mechanism that monitors the number of requests received from each client. If a client exceeds a predefined threshold (e.g., 15 requests per second), the server temporarily blacklists the client by blocking its requests for a specific duration. Additionally, the server tracks "repeat offenders"—clients who exceed the rate limit multiple times—and permanently blocks them if they are blacklisted three times.
 
         <video width="400" controls>
             <source src="media/DoS-example.mp4" type="video/mp4" class="project-image">
@@ -107,7 +104,7 @@ server_socket.sendto(b"Hello from server!", addr)   # server will share her IP a
         
         <br>
         <a href="projects.html" class="back-button">← Back to Projects</a>
-        <a href="https://github.com/junior91185/broadcasting-and-DoS-mitigation"target="_blank" class="project-link">GitHub</a>
+        <a href="https://github.com/junior91185/broadcasting-and-DoS-mitigation" target="_blank" class="project-link">GitHub</a>
 
     </div>
 
