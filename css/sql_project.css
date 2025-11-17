@@ -12,6 +12,10 @@ body {
     min-height: 100vh;
 }
 
+p, li {
+    font-weight: 200;
+}
+
 .project-container {
     max-width: 900px;
     margin: 10px auto;
