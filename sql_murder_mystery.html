@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
     <title>SQL Murder Mystery Project</title>
     <link rel="stylesheet" href="css/styles_iam.css">
     <link rel="stylesheet" href="css/nav.css">
@@ -17,108 +17,114 @@
     </header>
 
     <div class="project-container">
-        <h1>SQL Murder Mystery 🕵️‍♀️</h1>
+        <h1>SQL Murder Mystery</h1>
         <p>
-            This project documents my solution to the 
-            <a href="https://mystery.knightlab.com/" target="_blank">SQL Murder Mystery</a>.
-            I used Microsoft SQL Server (SSMS) and T-SQL to investigate tables like 
-            <code>crime_scene_report</code>, <code>person</code>, <code>interview</code>, 
-            and related datasets to identify the suspect.
+            This project was based on the 
+            <a href="https://mystery.knightlab.com/" target="_blank">SQL Murder Mystery</a> challenge.  
+            I used Microsoft SQL Server to investigate multiple tables such as 
+            <code>crime_scene_report</code>, <code>person</code>, and <code>interview</code> 
+            to identify the suspect through logical data analysis.
         </p>
 
-        <h2>Purpose</h2>
+        <h2>Getting Started</h2>
         <p>
-            Practice real-world data investigation using SQL: joining multiple tables, filtering with 
-            date ranges, writing subqueries, and reasoning through evidence to reach a final conclusion.
+            I began by exploring the database structure to understand which tables 
+            might contain useful information for the investigation.
         </p>
-
-        <h2>Technologies</h2>
-        <ul>
-            <li>Microsoft SQL Server (SSMS)</li>
-            <li>T-SQL</li>
-        </ul>
-
-        <h2>Key Features</h2>
-        <ul>
-            <li><strong>Relational Analysis:</strong> Combined people, interviews, and event check-ins with multi-table <code>JOIN</code>s.</li>
-            <li><strong>Targeted Filtering:</strong> Used <code>BETWEEN</code>, <code>LIKE</code>, and numeric comparisons to narrow suspects.</li>
-            <li><strong>Deductive Queries:</strong> Subqueries (e.g., <code>MAX()</code> for the highest street number) to extract precise leads.</li>
-        </ul>
-
-        <h2>Representative Queries</h2>
-
-        <h3>Find all attendees + interviews (keep people even without interviews)</h3>
-        <pre><code>SELECT
-    p.id AS person_id,
-    p.name,
-    fb.event_name,
-    fb.date,
-    i.transcript
-FROM dbo.facebook_event_checkin AS fb
-JOIN dbo.person AS p
-  ON p.id = fb.person_id
-LEFT JOIN dbo.interview AS i
-  ON i.person_id = p.id
-WHERE fb.event_name = 'SQL Symphony Concert'
-  AND fb.date BETWEEN '2017-12-01' AND '2017-12-31';
+        <pre><code>SELECT TOP 5 * FROM dbo.crime_scene_report;
+SELECT TOP 5 * FROM dbo.person;
+SELECT TOP 5 * FROM dbo.interview;
+GO
+-- (explore.sql)
 </code></pre>
 
-        <h3>Highest address number on a street (no ORDER BY)</h3>
-        <pre><code>SELECT MAX(address_number) AS HighestAddressNumber
-FROM dbo.person
-WHERE address_street_name = 'Northwestern Dr';
-</code></pre>
-
-        <h3>Get the person who lives at that highest number</h3>
+        <h2>Initial Discovery</h2>
+        <p>
+            The first lead came from the crime report recorded on January 15, 2018, in SQL City.  
+            Using this information, I joined the <code>person</code> and <code>interview</code> tables 
+            to find possible witnesses who lived near the crime scene.
+        </p>
         <pre><code>SELECT *
-FROM dbo.person
+FROM dbo.person p
+INNER JOIN dbo.interview i
+    ON p.id = i.person_id
+WHERE name LIKE 'Annabel%' AND address_street_name = 'Franklin Ave';
+
+SELECT *
+FROM dbo.person p
+INNER JOIN dbo.interview i
+    ON p.id = i.person_id
 WHERE address_street_name = 'Northwestern Dr'
   AND address_number = (
       SELECT MAX(address_number)
       FROM dbo.person
       WHERE address_street_name = 'Northwestern Dr'
   );
+-- (Witness_Statements.sql)
 </code></pre>
 
-        <h3>Final deduction (example skeleton)</h3>
-        <pre><code>-- Replace with your actual final query
-SELECT p.name, i.transcript, c.description, c.date
-FROM dbo.person p
-JOIN dbo.interview i ON i.person_id = p.id
-JOIN dbo.crime_scene_report c ON c.city = p.city
-WHERE &lt;your final conditions&gt;;
-</code></pre>
-
-        <h2>Results</h2>
+        <h2>Following the Clues</h2>
         <p>
-            Using the queries above (and additional exploration), I identified the correct suspect
-            and reconstructed the timeline from the concert check-ins and interview transcripts.
+            Using information from the interviews, I followed new leads to identify the first suspect.  
+            I connected the <code>drivers_liscense</code>, <code>person</code>, and 
+            <code>facebook_event_checkin</code> tables to filter by description and event attendance.
         </p>
+        <pre><code>SELECT 
+    dl.age, dl.hair_color, dl.car_make, dl.car_model,
+    p.name, fb.event_name, fb.date
+FROM dbo.drivers_liscense dl
+INNER JOIN dbo.person p ON dl.id = p.liscense_id
+INNER JOIN dbo.facebook_event_checkin fb ON p.id = fb.person_id
+WHERE hair_color = 'red'
+  AND car_make LIKE 'Tesla%'
+  AND date BETWEEN '2017-12-01' AND '2017-12-31';
+-- (First_Suspect_J.B.sql)
+</code></pre>
 
-        <!-- Optional screenshots -->
-        <!--
-        <img src="images/sql_mm_attendees.png" alt="Concert attendee query results" class="project-image">
-        <img src="images/sql_mm_interviews.png" alt="Interview transcripts sample" class="project-image">
-        -->
+        <h2>Second Suspect and Final Connection</h2>
+        <p>
+            After identifying a second suspect, I verified their activity 
+            using check-in records from the fitness club tables.
+        </p>
+        <pre><code>SELECT 
+    ck.check_in_date,
+    membership_id,
+    m.person_id, 
+    p.name, 
+    p.address_number,
+    i.transcript
+FROM dbo.get_fit_now_member m
+INNER JOIN dbo.get_fit_now_check_in ck ON m.id = ck.membership_id
+INNER JOIN dbo.person p ON m.person_id = p.id
+INNER JOIN dbo.interview i ON p.id = i.person_id
+WHERE ck.check_in_date = '2018-01-09'
+  AND ck.membership_id LIKE '48Z%';
+-- (Second_Suspect_M.P.sql)
+</code></pre>
 
-        <h2>How to Run</h2>
-        <ol>
-            <li>Clone the repository:
-                <pre><code>git clone https://github.com/junior91185/sql-murder-mystery.git</code></pre>
-            </li>
-            <li>Open the SQL files in SSMS.</li>
-            <li>Run setup (if included), then review and execute the investigative queries and final solution.</li>
-        </ol>
+        <h2>Database Cleanup</h2>
+        <p>
+            To maintain consistency, I added foreign key relationships 
+            between the tables in the database.
+        </p>
+        <pre><code>ALTER TABLE dbo.facebook_event_checkin
+ADD CONSTRAINT FK_facebook_event_checkin_person
+FOREIGN KEY (person_id) REFERENCES dbo.person(id);
+-- (add_foreignkeys.sql)
+</code></pre>
 
-        <h2>Repository</h2>
-        <ul>
-            <li><a href="https://github.com/junior91185/sql-murder-mystery" target="_blank">GitHub: sql-murder-mystery</a></li>
-            <li>Example files in the repo: <code>final_answer.sql</code>, <code>Second_Suspect_M_P.sql</code>, <code>Witness_Statements.sql</code></li>
-        </ul>
+        <h2>Conclusion</h2>
+        <p>
+            By combining details from crime reports, interviews, event check-ins, 
+            and membership logs, I identified the true culprit and solved the mystery.  
+            This project strengthened my SQL skills in querying, joining, 
+            and interpreting real-world data structures.
+        </p>
 
         <br>
         <a href="projects.html" class="back-button">← Back to Projects</a>
-        <a href="https://github.com/junior91185/sql-murder-mystery" target="_blank" class="project-link">GitHub</a>
+        <a href="https://github.com/junior91185/sql-murder-mystery" 
+           target="_blank" class="project-link">GitHub</a>
     </div>
 </body>
 </html>
