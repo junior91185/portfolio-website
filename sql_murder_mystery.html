@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>SQL Murder Mystery Project</title>
+    <link rel="stylesheet" href="css/styles_iam.css">
+    <link rel="stylesheet" href="css/nav.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="menu">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="projects.html">Projects</a></li>
+            </ul>  
+        </nav>
+    </header>
+
+    <div class="project-container">
+        <h1>SQL Murder Mystery 🕵️‍♀️</h1>
+        <p>
+            This project documents my solution to the 
+            <a href="https://mystery.knightlab.com/" target="_blank">SQL Murder Mystery</a>.
+            I used Microsoft SQL Server (SSMS) and T-SQL to investigate tables like 
+            <code>crime_scene_report</code>, <code>person</code>, <code>interview</code>, 
+            and related datasets to identify the suspect.
+        </p>
+
+        <h2>Purpose</h2>
+        <p>
+            Practice real-world data investigation using SQL: joining multiple tables, filtering with 
+            date ranges, writing subqueries, and reasoning through evidence to reach a final conclusion.
+        </p>
+
+        <h2>Technologies</h2>
+        <ul>
+            <li>Microsoft SQL Server (SSMS)</li>
+            <li>T-SQL</li>
+        </ul>
+
+        <h2>Key Features</h2>
+        <ul>
+            <li><strong>Relational Analysis:</strong> Combined people, interviews, and event check-ins with multi-table <code>JOIN</code>s.</li>
+            <li><strong>Targeted Filtering:</strong> Used <code>BETWEEN</code>, <code>LIKE</code>, and numeric comparisons to narrow suspects.</li>
+            <li><strong>Deductive Queries:</strong> Subqueries (e.g., <code>MAX()</code> for the highest street number) to extract precise leads.</li>
+        </ul>
+
+        <h2>Representative Queries</h2>
+
+        <h3>Find all attendees + interviews (keep people even without interviews)</h3>
+        <pre><code>SELECT
+    p.id AS person_id,
+    p.name,
+    fb.event_name,
+    fb.date,
+    i.transcript
+FROM dbo.facebook_event_checkin AS fb
+JOIN dbo.person AS p
+  ON p.id = fb.person_id
+LEFT JOIN dbo.interview AS i
+  ON i.person_id = p.id
+WHERE fb.event_name = 'SQL Symphony Concert'
+  AND fb.date BETWEEN '2017-12-01' AND '2017-12-31';
+</code></pre>
+
+        <h3>Highest address number on a street (no ORDER BY)</h3>
+        <pre><code>SELECT MAX(address_number) AS HighestAddressNumber
+FROM dbo.person
+WHERE address_street_name = 'Northwestern Dr';
+</code></pre>
+
+        <h3>Get the person who lives at that highest number</h3>
+        <pre><code>SELECT *
+FROM dbo.person
+WHERE address_street_name = 'Northwestern Dr'
+  AND address_number = (
+      SELECT MAX(address_number)
+      FROM dbo.person
+      WHERE address_street_name = 'Northwestern Dr'
+  );
+</code></pre>
+
+        <h3>Final deduction (example skeleton)</h3>
+        <pre><code>-- Replace with your actual final query
+SELECT p.name, i.transcript, c.description, c.date
+FROM dbo.person p
+JOIN dbo.interview i ON i.person_id = p.id
+JOIN dbo.crime_scene_report c ON c.city = p.city
+WHERE &lt;your final conditions&gt;;
+</code></pre>
+
+        <h2>Results</h2>
+        <p>
+            Using the queries above (and additional exploration), I identified the correct suspect
+            and reconstructed the timeline from the concert check-ins and interview transcripts.
+        </p>
+
+        <!-- Optional screenshots -->
+        <!--
+        <img src="images/sql_mm_attendees.png" alt="Concert attendee query results" class="project-image">
+        <img src="images/sql_mm_interviews.png" alt="Interview transcripts sample" class="project-image">
+        -->
+
+        <h2>How to Run</h2>
+        <ol>
+            <li>Clone the repository:
+                <pre><code>git clone https://github.com/junior91185/sql-murder-mystery.git</code></pre>
+            </li>
+            <li>Open the SQL files in SSMS.</li>
+            <li>Run setup (if included), then review and execute the investigative queries and final solution.</li>
+        </ol>
+
+        <h2>Repository</h2>
+        <ul>
+            <li><a href="https://github.com/junior91185/sql-murder-mystery" target="_blank">GitHub: sql-murder-mystery</a></li>
+            <li>Example files in the repo: <code>final_answer.sql</code>, <code>Second_Suspect_M_P.sql</code>, <code>Witness_Statements.sql</code></li>
+        </ul>
+
+        <br>
+        <a href="projects.html" class="back-button">← Back to Projects</a>
+        <a href="https://github.com/junior91185/sql-murder-mystery" target="_blank" class="project-link">GitHub</a>
+    </div>
+</body>
+</html>
