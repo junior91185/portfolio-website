@@ -5,6 +5,15 @@
     <title>SQL Murder Mystery Project</title>
     <link rel="stylesheet" href="css/styles_iam.css">
     <link rel="stylesheet" href="css/nav.css">
+    <style>
+        /* Override bold styling */
+        h1, h2, h3, strong {
+            font-weight: 500;
+        }
+        p, li, code {
+            font-weight: 400;
+        }
+    </style>
 </head>
 <body>
     <header class="header">
@@ -18,18 +27,39 @@
 
     <div class="project-container">
         <h1>SQL Murder Mystery</h1>
+
         <p>
-            This project was based on the 
+            This project is based on the 
             <a href="https://mystery.knightlab.com/" target="_blank">SQL Murder Mystery</a> challenge.  
-            I used Microsoft SQL Server to investigate multiple tables such as 
-            <code>crime_scene_report</code>, <code>person</code>, and <code>interview</code> 
-            to identify the suspect through logical data analysis.
+            I used Microsoft SQL Server to explore and connect multiple datasets to solve a simulated crime.
         </p>
 
-        <h2>Getting Started</h2>
+        <h2>Setting Up</h2>
         <p>
-            I began by exploring the database structure to understand which tables 
-            might contain useful information for the investigation.
+            After downloading the database tables, the first thing I did was set up proper foreign key relationships 
+            between them. This ensured that data could be joined accurately and that relationships 
+            between tables like <code>person</code>, <code>drivers_license</code>, and 
+            <code>facebook_event_checkin</code> were consistent.
+        </p>
+
+        <pre><code>ALTER TABLE dbo.facebook_event_checkin
+ADD CONSTRAINT FK_facebook_event_checkin_person
+FOREIGN KEY (person_id) REFERENCES dbo.person(id);
+
+ALTER TABLE dbo.get_fit_now_member
+ADD CONSTRAINT FK_get_fit_now_member_person
+FOREIGN KEY (person_id) REFERENCES dbo.person(id);
+
+ALTER TABLE dbo.interview
+ADD CONSTRAINT FK_interview_person
+FOREIGN KEY (person_id) REFERENCES dbo.person(id);
+-- (add_foreignkeys.sql)
+</code></pre>
+
+        <h2>Exploring the Data</h2>
+        <p>
+            I began by exploring the main tables — <code>crime_scene_report</code>, <code>person</code>, and 
+            <code>interview</code> — to understand what type of data was available and how it connected.
         </p>
         <pre><code>SELECT TOP 5 * FROM dbo.crime_scene_report;
 SELECT TOP 5 * FROM dbo.person;
@@ -38,12 +68,13 @@ GO
 -- (explore.sql)
 </code></pre>
 
-        <h2>Initial Discovery</h2>
+        <h2>First Suspect</h2>
         <p>
-            The first lead came from the crime report recorded on January 15, 2018, in SQL City.  
-            Using this information, I joined the <code>person</code> and <code>interview</code> tables 
-            to find possible witnesses who lived near the crime scene.
+            The first lead came from the crime report in SQL City. Using witness information, I searched 
+            the <code>person</code> and <code>interview</code> tables to locate two people living near the 
+            crime scene. One of them, who lived on Franklin Ave, provided a clue pointing to the suspect’s car.
         </p>
+
         <pre><code>SELECT *
 FROM dbo.person p
 INNER JOIN dbo.interview i
@@ -63,12 +94,13 @@ WHERE address_street_name = 'Northwestern Dr'
 -- (Witness_Statements.sql)
 </code></pre>
 
-        <h2>Following the Clues</h2>
+        <h2>Tracking the First Suspect</h2>
         <p>
-            Using information from the interviews, I followed new leads to identify the first suspect.  
-            I connected the <code>drivers_liscense</code>, <code>person</code>, and 
-            <code>facebook_event_checkin</code> tables to filter by description and event attendance.
+            The lead pointed to someone driving a red Tesla. I joined the <code>drivers_license</code>, 
+            <code>person</code>, and <code>facebook_event_checkin</code> tables to find a match.  
+            This revealed that the suspect attended the "SQL Symphony Concert" multiple times.
         </p>
+
         <pre><code>SELECT 
     dl.age, dl.hair_color, dl.car_make, dl.car_model,
     p.name, fb.event_name, fb.date
@@ -81,11 +113,13 @@ WHERE hair_color = 'red'
 -- (First_Suspect_J.B.sql)
 </code></pre>
 
-        <h2>Second Suspect and Final Connection</h2>
+        <h2>Second Suspect</h2>
         <p>
-            After identifying a second suspect, I verified their activity 
-            using check-in records from the fitness club tables.
+            I then analyzed fitness club records using the <code>get_fit_now_member</code> and 
+            <code>get_fit_now_check_in</code> tables.  
+            This helped confirm the second suspect's identity and match it with interview evidence.
         </p>
+
         <pre><code>SELECT 
     ck.check_in_date,
     membership_id,
@@ -102,23 +136,12 @@ WHERE ck.check_in_date = '2018-01-09'
 -- (Second_Suspect_M.P.sql)
 </code></pre>
 
-        <h2>Database Cleanup</h2>
-        <p>
-            To maintain consistency, I added foreign key relationships 
-            between the tables in the database.
-        </p>
-        <pre><code>ALTER TABLE dbo.facebook_event_checkin
-ADD CONSTRAINT FK_facebook_event_checkin_person
-FOREIGN KEY (person_id) REFERENCES dbo.person(id);
--- (add_foreignkeys.sql)
-</code></pre>
-
         <h2>Conclusion</h2>
         <p>
-            By combining details from crime reports, interviews, event check-ins, 
-            and membership logs, I identified the true culprit and solved the mystery.  
-            This project strengthened my SQL skills in querying, joining, 
-            and interpreting real-world data structures.
+            By connecting information from witness statements, license data, and event attendance,  
+            I was able to piece together the sequence of events and identify the true culprit.  
+            This project strengthened my SQL querying skills and showed how relational data 
+            can tell a complete story through logical reasoning.
         </p>
 
         <br>
