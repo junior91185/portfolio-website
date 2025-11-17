@@ -12,41 +12,53 @@ body {
     min-height: 100vh;
 }
 
-
-.projects-container {
+.project-container {
     max-width: 900px;
-    margin: 50px auto;
-    padding: 20px;
-    background-color: white;  
+    margin: 10px auto;
+    padding: 30px;
+    background-color: white;
     color: #1e1e1e;
     border-radius: 10px;
     text-align: center;
 }
 
-.project-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
+/* Code box styling */
+.project-container pre {
+    background-color: #232323;
+    padding: 10px;
+    border-radius: 5px;
+    color: #ffb400;
+    text-align: left;
+    white-space: pre-wrap;
 }
 
-.project-card {
-    background-color: #232323;
-    padding: 20px;
-    border-radius: 8px;
-    width: 400px;
+/* List formatting */
+.project-container ul {
     text-align: left;
+}
+
+/* Images */
+.project-image {
+    width: 100%;
+    max-width: 700px;
+    margin: 10px 0;
+    border-radius: 5px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
 }
 
-.project-card h2 {
-    color: white; 
+/* Buttons */
+.back-button {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: #cf2e3c;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
 }
 
-.project-card p {
-    color:white;
-    font-size: 16px;
-    line-height: 1.4;
+.back-button:hover {
+    background-color: #ff6b6b;
 }
 
 .project-link, .view-project {
@@ -56,17 +68,17 @@ body {
     border-radius: 5px;
     text-decoration: none;
     color: white;
-    font-weight: normal;
+    font-weight: 500;
 }
 
 .project-link {
     background-color: #cf2e3c; 
 }
 
-.view-project {
-    background-color: #cf2e3c; 
-}
-
-.project-link:hover, .view-project:hover {
-    opacity: 0.8;
+/* Optional: headings look smoother */
+h1, h2 {
+    font-weight: 500;
+    margin-top: 25px;
+    margin-bottom: 10px;
+    color: #222;
 }
