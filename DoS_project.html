@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8"/>
     <title>Broadcasting & DoS Mitigation Project</title>
     <link rel="stylesheet" href="css/styles_iam.css">
     <link rel="stylesheet" href="css/nav.css">
@@ -17,23 +18,20 @@
 
     <div class="project-container">
         <h1>Broadcasting & DoS Mitigation</h1>
-        <p>This project was developed as part of a hands-on lab for <i>Introduction to Cryptography and Computer Security</i>. It demonstrates:</p>
+        <p><strong>Technologies:</strong> Linux (Ubuntu), Python</p>
+
+        <p>This project was created for my cryptography and security course. It shows how a client and server communicate using UDP and how basic DoS protection can be added.</p>
+
+        <h2>What the Project Does</h2>
         <ul>
-            <li>Client-server communication using UDP.</li>
-            <li>Broadcasting messages from the client to the server.</li>
-            <li>Implementation of DoS (Denial of Service) mitigation strategies.</li>
+            <li>Uses UDP for simple client–server communication.</li>
+            <li>Broadcasts messages from the client to the server.</li>
+            <li>Applies basic DoS mitigation (rate limiting and blocking).</li>
         </ul>
 
-        <h2>Purpose</h2>
-        <p>This lab provided an opportunity to apply networking principles in a practical setting, showcasing skills in socket programming, multithreading, and DoS mitigation techniques.</p>
+        <h2>Why I Built This</h2>
+        <p>This lab helped me practice network communication, socket programming, and defensive techniques for handling high traffic.</p>
 
-        <h2>Features</h2>
-        <ul>
-            <li><strong>Client-Server Communication:</strong> Clients broadcast UDP messages to the server, and the server listens and responds dynamically.</li>
-            <li><strong>Anti-DoS Strategies:</strong> Implementing rate-limiting requests per client and blacklisting abusive clients.</li>
-            <li><strong>Multithreading:</strong> The server uses multithreaded request handling for better scalability.</li>
-        </ul>
-        <br>
         <h2>Example Usage</h2>
         <p>Set up the Server to listen for Client broadcast</p>
         <pre><code>server_RecieveBroadcast.py
@@ -94,7 +92,13 @@ server_socket.sendto(b"Hello from server!", addr)   # server will share her IP a
         <h2>Denial-of-Service (DoS) Mitigation in Action</h2>
         <p>The server safeguards itself against excessive traffic by implementing rate limiting and blacklisting abusive clients.</p>
         
-        <p>By using <strong>client_broadcasting_loop.py</strong>, I was able to simulate a Client overwhelming a Server with requests, mimicking the behavior of a "real" Denial-of-Service (DoS) attack. The client program continuously broadcasts messages to the server at a rapid rate, demonstrating how an attacker might try to flood a server with excessive traffic to disrupt its normal operations. To counter this simulated attack, I developed <strong>anti_DoS_server_Advanced.py</strong>, a server-side script designed to detect and mitigate the impact of such attacks. This program implements a rate-limiting mechanism that monitors the number of requests received from each client. If a client exceeds a predefined threshold (e.g., 15 requests per second), the server temporarily blacklists the client by blocking its requests for a specific duration. Additionally, the server tracks "repeat offenders"—clients who exceed the rate limit multiple times—and permanently blocks them if they are blacklisted three times.
+        <p>
+            I used <strong>client_broadcasting_loop.py</strong> to simulate a DoS attack by sending rapid, repeated messages to the server. 
+            To handle this, I built <strong>anti_DoS_server_Advanced.py</strong>, which detects when a client sends too many requests and 
+            temporarily blocks them. If the same client triggers the limit multiple times, the server permanently blacklists them. 
+            This shows how basic rate limiting and blocking can help protect a server from overload.
+        </p>
+
 
         <video width="400" controls>
             <source src="media/DoS-example.mp4" type="video/mp4" class="project-image">
